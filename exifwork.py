@@ -5,18 +5,10 @@ script_dir = os.path.abspath(os.path.dirname(__file__))
 
 # date_until = datetime.date(2021, 6, 1)
 date_until = None
-
 src_root_dir = '/moments/ipad'
 dst_root_dir = '/sync2google/ipad'
 
-
 logger = logging.getLogger()
-
-logging.basicConfig(filename=os.path.join(script_dir, 'exif.log'),
-                    filemode='a',
-                    format='%(asctime)s,%(msecs)d - %(levelname)s - %(message)s',
-                    datefmt='%Y-%m-%d %H:%M:%S',
-                    level=logging.DEBUG)
 
 DRY_RUN = False
 
@@ -42,7 +34,6 @@ def exif_mod():
         src_dir = os.path.join(src_root_dir, str(d))
         if os.path.exists(src_dir):
             dst_dir = os.path.join(dst_root_dir, os.path.basename(src_dir))
-            # logger.info('processing dir {} => {}'.format(src_dir, dst_dir))
             cmd = 'exiftool -P -MPF:ALL= -o {}/ {}'.format(dst_dir, src_dir)
             if DRY_RUN:
                 logger.info('[DRYRUN] {}'.format(cmd))
@@ -82,8 +73,8 @@ def main():
     args = parser.parse_args()
 
     DRY_RUN = args.dryrun
-
     exif_mod()
+
 
 if __name__ == '__main__':
     main()
