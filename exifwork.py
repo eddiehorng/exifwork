@@ -4,15 +4,15 @@ import os, sys, datetime, subprocess, argparse, logging
 script_dir = os.path.abspath(os.path.dirname(__file__))
 
 
-src_root_dir = '/photos/ipad'
-dst_root_dir = '/sync2google/ipad'
+# src_root_dir = '/photos/ipad'
+# dst_root_dir = '/sync2google/ipad'
 
 logger = logging.getLogger()
 
 DRY_RUN = False
 
 
-def exif_mod():
+def exif_mod(src_root_dir, dst_root_dir):
     def format_exiftools_errmsg(msg):
         lines = msg.decode().split('\n')
         return '\n'.join(lines[-5:])
@@ -57,10 +57,12 @@ def main():
     setup_logger()
     parser = argparse.ArgumentParser()
     parser.add_argument('-d', '--dryrun', action='store_true')
+    parser.add_argument('-s', '--source-dir', required=True)
+    parser.add_argument('-t', '--target-dir', required=True)
     args = parser.parse_args()
 
     DRY_RUN = args.dryrun
-    exif_mod()
+    exif_mod(args.source_dir, args.target_dir)
 
 
 if __name__ == '__main__':
