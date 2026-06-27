@@ -1,0 +1,1 @@
+openssl req -newkey rsa:2048 -nodes -keyout eddies3.nas.key -x509 -days 36500 -out eddies3.crt -subj "/CN=eddies3.nas" -addext "subjectAltName = DNS:eddies3.nas"
