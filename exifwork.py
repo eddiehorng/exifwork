@@ -12,12 +12,16 @@ logger = logging.getLogger()
 DRY_RUN = False
 
 
-def exif_mod(src_root_dir, dst_root_dir):
+def exif_mod(src_root_dir, dst_root_dir, assigned_date=None):
     def format_exiftools_errmsg(msg):
         lines = msg.decode().split('\n')
         return '\n'.join(lines[-5:])
 
-    d_src = datetime.date.today() - datetime.timedelta(days=1)
+    if assigned_date:
+        d_src = datetime.datetime.strptime(assigned_date, "%Y-%m")
+    else:
+        d_src = datetime.date.today() - datetime.timedelta(days=1)
+
     str_month = d_src.strftime('%Y/%m')
     src_dir = os.path.join(src_root_dir, str_month)
     dst_dir = os.path.join(dst_root_dir, str_month)
@@ -59,10 +63,19 @@ def main():
     parser.add_argument('-d', '--dryrun', action='store_true')
     parser.add_argument('-s', '--source-dir', required=True)
     parser.add_argument('-t', '--target-dir', required=True)
+    parser.add_argument('-D', '--assign-date', help='format: yyyy-mm')
+    parser.add_argument('-M', '--month-ago', type=int, help='from today to M month ago')
     args = parser.parse_args()
 
     DRY_RUN = args.dryrun
-    exif_mod(args.source_dir, args.target_dir)
+    if args.month_ago:
+        now = datetime.datetime.now()
+        for m in range(args.month_ago):
+            a_date = now - datetime.timedelta(30*m)
+            exif_mod(args.source_dir, args.target_dir, assigned_date=a_date.strftime("%Y-%m"))
+
+    if args.assign_date:
+        exif_mod(args.source_dir, args.target_dir, assigned_date=args.assign_date)
 
 
 if __name__ == '__main__':
